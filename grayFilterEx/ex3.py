@@ -80,3 +80,5 @@ cv.imshow('Median_55', filtered_median55)
 
 cv.waitKey(0)
 cv.destroyAllWindows()
+
+#남은작업: 테두리 처리, 컬러버전 로직, 라플라시안, UI, 영상
