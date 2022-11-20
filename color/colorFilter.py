@@ -72,8 +72,8 @@ def median55(before):
 def Laplacian(before):
     after = np.copy(before)
     filter = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
-    #([[-1, 2, -1], [2, -4, 2], [-1, 2, -1]])
-    #([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+    # ([[-1, 2, -1], [2, -4, 2], [-1, 2, -1]])
+    # ([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
     # ([[1, 1, 1], [1, -8, 1], [1, 1, 1]])
 
     x, y, channel = before.shape
@@ -90,25 +90,49 @@ def Laplacian(before):
     return after
 
 
+def Laplacian_Gray(before):
+    after = np.copy(before)
+    filter = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+
+    x, y = before.shape
+    for i in range(1, x - 1):
+        for j in range(1, y - 1):
+            after[i, j] = 0
+
+            for k in [-1, 0, 1]:
+                for l in [-1, 0, 1]:
+                    after[i, j] += filter[k + 1, l + 1] * before[i + k, j + l]
+
+    return after
+
+
 origin = cv.imread("Lenna.png", cv.IMREAD_COLOR)
 gray = cv.imread("Lenna.png", cv.IMREAD_GRAYSCALE)
-# filtered_mean33=mean33(origin)
-# filtered_mean55=mean55(origin)
-# filtered_median33 = median33(origin)
-# filtered_median55 = median55(origin)
-#filtered_Laplacian = cv.Laplacian(origin, -1)
-#filtered_Laplacian = Laplacian(origin)
-#filtered_Laplacian = cv.Laplacian(origin, -1, ksize=3)
-filtered_Laplacian = cv.Laplacian(gray, -1, ksize=3)
+mask1 = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+mask2 = np.array([[-1, 2, -1], [2, -4, 2], [-1, 2, -1]])
+mask3 = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]])
+#filtered_mean33=mean33(origin)
+#filtered_mean55=mean55(origin)
+#filtered_median33 = median33(origin)
+#filtered_median55 = median55(origin)
+
+filtered_Laplacian = Laplacian(origin)
+# filtered_Laplacian = Laplacian_Gray(gray)
+# filtered_Laplacian = cv.Laplacian(origin, -1, ksize=3)
+# filtered_Laplacian = cv.Laplacian(origin, -1)
+filtered_Laplacian = cv.filter2D(origin, -1, mask3)
+filtered_Laplacian_Gray = cv.filter2D(gray, -1, mask3)
 
 cv.imshow('Origin', origin)
-# cv.imshow('Mean_33', filtered_mean33)
+#cv.imshow('Mean_33', filtered_mean33)
 # cv.imshow('Mean_55', filtered_mean55)
 # cv.imshow('Median_33', filtered_median33)
 # cv.imshow('Median_55', filtered_median55)
 cv.imshow('Laplacian', filtered_Laplacian)
+cv.imshow('Laplacian_Gray', filtered_Laplacian_Gray)
 
 cv.waitKey(0)
 cv.destroyAllWindows()
 
 # 남은작업: 테두리 처리, 컬러버전 로직, 라플라시안, UI, 영상
+
